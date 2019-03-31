@@ -2,6 +2,7 @@
 
 #include "layout.h"
 #include "functions.h"
+#include "data.h"
 
 int draw_screenyx() {
 	//Do I really need these parameters?
@@ -53,6 +54,18 @@ int draw_screenyx() {
 			}
 		}
 		printw("\n");
+	}
+	
+	move(3, 3);
+	int x = 0;
+	int j = 0;
+	while ((x * 9) < max_x - 9) {
+		for (j; j < 9; j++) {
+			if (j != 4)
+				printw(" ");
+			else 
+				printw("%c", to_num(j));
+		}
 	}
 }
 

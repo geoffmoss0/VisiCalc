@@ -1,3 +1,6 @@
+#include <string.h>
+#include <ctype.h>
+
 #include "functions.h"
 
 //I can't take credit for the implementation of this,
