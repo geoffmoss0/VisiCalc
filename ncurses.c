@@ -1,44 +1,86 @@
 #include <ncurses.h>
+#include <string.h>
+
+
+void refill(int y, int x, char *cursor) {
+	attroff(COLOR_PAIR(1));
+	printw("%s", cursor);
+	move(y, x);
+	attron(COLOR_PAIR(1));
+	start_color();
+}
+
 
 int main(void) {
+
+
+	int draw_size = 8;
 	initscr();
 	refresh();
 	noecho();
 	refresh();
+	//curs_set(0);
+	printw("          ");
 	int ch, x, y, trash;
 	x = 0; 
 	y = 0;
+	int max_x;
+	int max_y;
+	getmaxyx(curscr, max_y, max_x);
 	move(0, 0);
+	start_color();
+	init_color(COLOR_BLACK, 187, 39, 141);
+	init_pair(1, COLOR_BLACK, COLOR_WHITE);
+	attron(COLOR_PAIR(1));
+	char cursor[9] = "        ";
+	//printf("%s", cursor);
+	refresh();
 	while((ch = getch()) != '\0') {
 		if (ch == '\033') {
 			getch();
 			int real = getch();
 			if (real == 'A') {
-				if (y != 0) {
+				if (y > 0) {
+					refill(y, x, cursor);
 					move(y-1, x);
 					y--;
+					printw("%s", cursor);
+					move(y, x);
 				}
 			}
 			if (real == 'B') {
-				move(y+1, x);
-				y++;
+				if (y < max_y - 1) {
+					refill(y, x, cursor);
+					move(y+1, x);
+					y++;
+					printw("%s", cursor);
+					move(y, x);
+				}
 			}
 			if (real == 'C') {
-				move(y, x+1);
-				x++;
+				if (x <= max_x - (2 *draw_size) ) {
+					refill(y, x, cursor);
+					move(y, x+draw_size);
+					x+=draw_size;
+					printw("%s", cursor);
+					move(y, x);
+				}
 			}
 			if (real == 'D') {
-				if (x != 0) {
-					move(y, x-1);
-					x--;
+				if (x >= draw_size) {
+					refill(y, x, cursor);
+					move(y, x-draw_size);
+					x-=draw_size;
+					printw("%s", cursor);
+					move(y, x);
 				}
 			}
 		} else if (ch == 127) { //backspace
 			trash = getyx(curscr, y, x);
 			//mvprintw(0, 0, "x: %d, y: %d\n", x, y);
-			move(y, x-1);
-			x--;
-			delch();
+			move(y, x-draw_size);
+			x-=draw_size;
+			printw("%s", cursor);
 		} else {
 			printw("%c", ch);
 			x++;

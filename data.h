@@ -15,7 +15,7 @@ struct cell_s {
 };
 
 union data_s {
-	int value;
+	long int value;
 	char *label;
 	void (*func)(struct cell_s, struct cell_s, struct table_s);
 };
