@@ -14,6 +14,12 @@ int to_num(char c) {
 	if (p != NULL) {
 		n = p - alphabet;
 	}
-
 	return n;
+}
+
+char to_char(int i) {
+	char out;
+	static const char *const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	strncpy(&out, alphabet + i, 1);
+	return out;
 }

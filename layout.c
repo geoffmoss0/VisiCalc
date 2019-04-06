@@ -11,6 +11,11 @@ int draw_screenyx() {
 		return 0;
 	}
 	start_color();
+	//Background: 36, 76, 122
+	//Foreground: 143, 199, 240 
+	//init_color(COLOR_BLACK, 141, 297, 477);
+	init_color(COLOR_BLACK, 187, 39, 141);
+	init_color(COLOR_BLUE, 334, 627, 845);
 	init_pair(2, COLOR_BLACK, COLOR_BLUE);
 	init_pair(1, COLOR_BLUE, COLOR_BLACK);
 	attron(COLOR_PAIR(2));
@@ -60,13 +65,16 @@ int draw_screenyx() {
 	int x = 0;
 	int j = 0;
 	while ((x * 9) < max_x - 9) {
-		for (j; j < 9; j++) {
+		for (j = 0; j < 9; j++) {
 			if (j != 4)
 				printw(" ");
 			else 
-				printw("%c", to_num(j));
+				printw("%c", to_char(x));
 		}
+		x++;
 	}
+	refresh();
+	return 0;
 }
 
 
@@ -75,10 +83,7 @@ int main(void) {
 	initscr();
 	refresh();
 	noecho();
-	start_color();
 	curs_set(0);
-	init_pair(5, COLOR_BLACK, COLOR_BLUE);
-	
 	/**
 	attron(COLOR_PAIR(1));
 	printw("Works              ");
@@ -88,4 +93,5 @@ int main(void) {
 	refresh();
 	char ch = getch();
 	endwin();
+	return 0;
 }

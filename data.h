@@ -4,7 +4,7 @@
 struct table_s {
 	int rows;
 	int cols;
-	struct cell_s **cells[rows][cols];
+	struct cell_s **cells[256][256];
 };
 
 struct cell_s {

@@ -5,8 +5,8 @@
 void refill(int y, int x, char *cursor) {
 	attroff(COLOR_PAIR(1));
 	printw("%s", cursor);
-	move(y, x);
 	attron(COLOR_PAIR(1));
+	move(y, x);
 	start_color();
 }
 
@@ -19,7 +19,7 @@ int main(void) {
 	refresh();
 	noecho();
 	refresh();
-	//curs_set(0);
+	curs_set(0);
 	printw("          ");
 	int ch, x, y, trash;
 	x = 0; 
@@ -30,6 +30,8 @@ int main(void) {
 	move(0, 0);
 	start_color();
 	init_color(COLOR_BLACK, 187, 39, 141);
+	//init_color(COLOR_BLACK, 141, 297, 477);
+	//init_color(COLOR_BLUE, 559, 777, 937);
 	init_pair(1, COLOR_BLACK, COLOR_WHITE);
 	attron(COLOR_PAIR(1));
 	char cursor[9] = "        ";
