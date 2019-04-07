@@ -7,14 +7,20 @@
 #include "data.h"
 
 
+static int draw_size;
+static int x_start;
+static int y_start;
+
 ///Draw the axes, with y as the starting row and x as the starting column (converted to letters)
-void draw_axes(int y, int x, int draw_size) {
+void draw_axes(int y, int x) {
+	x_start = x;
+	y_start = y;
 	int max_x, max_y;
 	getmaxyx(curscr, max_y, max_x);
 	move(4, 0);
 	int b = 4;
 	attron(COLOR_PAIR(2));
-	for (int a = y; a < max_y; a++) {
+	for (int a = y; a < max_y - 4; a++) {
 		if (a >= 100) {
 			printw("%d", a);
 		} else if (a >= 10) {
@@ -30,7 +36,7 @@ void draw_axes(int y, int x, int draw_size) {
 	move(3, 3);
 	
 	int k = 0;
-	while ( (k * draw_size) + 3 < max_x) {
+	while ( ((k+1) * draw_size) + 3 < max_x) {
 		for (int j = 0; j < draw_size; j++) {
 			if (k + x < 26) {
 				if (j != ((draw_size / 2)) )
@@ -38,7 +44,6 @@ void draw_axes(int y, int x, int draw_size) {
 				else {
 					char *letters = to_char(k + x);
 					printw("%s", letters);
-					j++;
 					free(letters);
 				}			
 			} else {
@@ -55,11 +60,13 @@ void draw_axes(int y, int x, int draw_size) {
 		}
 		k++;
 	}
+	move(4, 4);
+	draw_cells(start_y, start_x);
 }
 
 ///Draws the data inside the cells. Definitely not working on this now
 void draw_cells(int y, int x) {
-
+	//make sure to keep track of cursor position locally
 }
 
 
@@ -101,32 +108,7 @@ int draw_screenyx() {
 	attron(COLOR_PAIR(2));
 	
 	printw("   ");
-	int b = 4;
-	move(b, 0);
-	for (int y = 0; y < max_y - 4; y++) {
-		if (y >= 9)
-			printw(" %d", y + 1);
-		else 
-			printw("  %d", y + 1);
-		move(b + 1, 0);
-		b++;
-	}
-	
-	move(3, 3);
-	int x = 0;
-	int j = 0;
-	while ((x * 9) < max_x - 9) {
-		for (j = 0; j < 9; j++) {
-			if (j != 4)
-				printw(" ");
-			else {
-				char *letters = to_char(x);
-				printw("%c", letters);
-				free(letters);
-			}
-		}
-		x++;
-	}
+	draw_axes(0, 0);
 	refresh();
 	return 0;
 }
@@ -134,10 +116,12 @@ int draw_screenyx() {
 
 
 int main(void) {
+	draw_size = 8;
 	initscr();
 	refresh();
 	noecho();
 	curs_set(0);
+	draw_size = 8;
 	/**
 	attron(COLOR_PAIR(1));
 	printw("Works              ");
@@ -146,7 +130,7 @@ int main(void) {
 	draw_screenyx();
 	refresh();
 	char cursor[9] = "        ";
-	draw_axes(20, 20, 8);
+	//draw_axes(20, 20, 8);
 	char ch = getch();
 	endwin();
 	return 0;
