@@ -4,10 +4,20 @@
 
 void refill(int y, int x, char *cursor) {
 	attroff(COLOR_PAIR(1));
-	printw("%s", cursor);
+	for (int i = 0; i < 8; i++) {
+		printw("%c", mvinch(y, x + i));
+	}
+	//printw("%s", cursor);
 	attron(COLOR_PAIR(1));
 	move(y, x);
 	start_color();
+}
+
+void draw_cursor(int y, int x, char *cursor) {
+	for (int i = 0; i < 8; i++) {
+		printw("%c", mvinch(y, x + i));
+	}
+	move(y, x);
 }
 
 
@@ -22,8 +32,9 @@ int main(void) {
 	curs_set(0);
 	printw("          ");
 	int ch, x, y, trash;
-	x = 0; 
-	y = 0;
+	x = 0; //current absolute x position
+	y = 0; //current absolute y position
+	int typed = 0;
 	int max_x;
 	int max_y;
 	getmaxyx(curscr, max_y, max_x);
@@ -41,13 +52,15 @@ int main(void) {
 		if (ch == '\033') {
 			getch();
 			int real = getch();
-			if (real == 'A') {
+			if (real == 'A') { //up
 				if (y > 0) {
 					refill(y, x, cursor);
 					move(y-1, x);
 					y--;
-					printw("%s", cursor);
-					move(y, x);
+					//printw("%s", cursor);
+					draw_cursor(y, x, cursor);
+					//move(y, x);
+					typed = 0;
 				}
 			}
 			if (real == 'B') {
@@ -55,17 +68,21 @@ int main(void) {
 					refill(y, x, cursor);
 					move(y+1, x);
 					y++;
-					printw("%s", cursor);
-					move(y, x);
+					//printw("%s", cursor);
+					draw_cursor(y, x, cursor);
+					//move(y, x);
+					typed = 0;
 				}
 			}
-			if (real == 'C') {
+			if (real == 'C') { //right
 				if (x <= max_x - (2 *draw_size) ) {
 					refill(y, x, cursor);
 					move(y, x+draw_size);
 					x+=draw_size;
-					printw("%s", cursor);
-					move(y, x);
+					//printw("%s", cursor);
+					draw_cursor(y, x, cursor);
+					//move(y, x);
+					typed = 0;
 				}
 			}
 			if (real == 'D') {
@@ -73,19 +90,27 @@ int main(void) {
 					refill(y, x, cursor);
 					move(y, x-draw_size);
 					x-=draw_size;
-					printw("%s", cursor);
-					move(y, x);
+					//printw("%s", cursor);
+					draw_cursor(y, x, cursor);
+					//move(y, x);
+					typed = 0;
 				}
 			}
 		} else if (ch == 127) { //backspace
-			trash = getyx(curscr, y, x);
-			//mvprintw(0, 0, "x: %d, y: %d\n", x, y);
-			move(y, x-draw_size);
-			x-=draw_size;
-			printw("%s", cursor);
+			if (typed > 0) {
+				//trash = getyx(curscr, y, x);
+				//mvprintw(0, 0, "x: %d, y: %d\n", x, y);
+				move(y, x+typed-1);
+				printw(" ");
+				move(y, x+typed);
+				typed--;
+			}
 		} else {
-			printw("%c", ch);
-			x++;
+			if (typed < 8) {
+				move(y, x + typed);
+				printw("%c", ch);
+				typed++;
+			}
 		}
 		refresh();
 	}
