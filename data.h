@@ -10,6 +10,7 @@ struct table_s {
 struct cell_s {
 	int row;
 	int col;
+	//do I really need this for the simplest version?
 	int contents; //based on the number, contains a number, string, or function
 	union data_s *data;
 };

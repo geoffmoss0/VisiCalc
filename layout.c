@@ -20,7 +20,7 @@ void draw_axes(int y, int x) {
 	move(4, 0);
 	int b = 4;
 	attron(COLOR_PAIR(2));
-	for (int a = y; a < max_y - 4; a++) {
+	for (int a = y+1; a < max_y - 4; a++) {
 		if (a >= 100) {
 			printw("%d", a);
 		} else if (a >= 10) {
@@ -61,13 +61,13 @@ void draw_axes(int y, int x) {
 		k++;
 	}
 	move(4, 4);
-	draw_cells(start_y, start_x);
+	//draw_cells(start_y, start_x);
 }
 
 ///Draws the data inside the cells. Definitely not working on this now
-void draw_cells(int y, int x) {
+//void draw_cells(int y, int x) {
 	//make sure to keep track of cursor position locally
-}
+//}
 
 
 ///Initial setup for the screen, at some point I might make this work with
@@ -113,8 +113,13 @@ int draw_screenyx() {
 	return 0;
 }
 
+void setup() {
+	noecho();
+	curs_set(0);
+	draw_size = 8;
+}
 
-
+/*
 int main(void) {
 	draw_size = 8;
 	initscr();
@@ -122,16 +127,17 @@ int main(void) {
 	noecho();
 	curs_set(0);
 	draw_size = 8;
-	/**
-	attron(COLOR_PAIR(1));
-	printw("Works              ");
-	attroff(COLOR_PAIR(1));
-	*/
+	
+	//attron(COLOR_PAIR(1));
+	//printw("Works              ");
+	//attroff(COLOR_PAIR(1));
+
 	draw_screenyx();
 	refresh();
 	char cursor[9] = "        ";
-	//draw_axes(20, 20, 8);
+	draw_axes(20, 20);
 	char ch = getch();
 	endwin();
 	return 0;
 }
+*/

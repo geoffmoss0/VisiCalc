@@ -3,4 +3,6 @@
 
 int draw_screenyx();
 
+void setup();
+
 #endif
