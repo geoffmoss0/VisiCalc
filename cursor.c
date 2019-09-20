@@ -69,6 +69,11 @@ void input() {
 					y--;
 					printw("        ");
 					move(y, x);
+				} else if(corner_row > 1) {
+						draw_axes(corner_row-1, corner_col);
+						row--;
+						corner_row--;
+						move(y, x);
 				}
 			} else if(real == 'B') { //down
 				if (y < max_y - 1) {
@@ -79,7 +84,7 @@ void input() {
 					printw("        ");
 					move(y, x);
 				} else if (row < 255) {
-					draw_axes(corner_row + 1, col);
+					draw_axes(corner_row + 1, corner_col);
 					row++;
 					corner_row++;
 					move(y, x);
@@ -88,21 +93,31 @@ void input() {
 					move(y, x);
 				}
 			} else if (real == 'C') { //right
-				if (x <= max_x - (2 * draw_size) && col < 256) {
+				if (x <= max_x - (2 * draw_size)) {
 					refill(y, x);
 					move(y, x+draw_size);
 					printw("        ");
 					col++;
 					x+=draw_size;
 					move(y, x);
+				} else if(col < 255) {
+					draw_axes(corner_row, corner_col + 1);
+					col++;
+					corner_col++;
+					move(y, x);
 				}
 			} else if (real == 'D') { //left
-				if (x >= draw_size && col > 1) {
+				if (x >= draw_size) {
 					refill(y, x);
 					move(y, x-draw_size);
 					printw("        ");
 					col--;
 					x-=draw_size;
+					move(y, x);
+				} else if(col > 1) {
+					draw_axes(corner_row, corner_col - 1);
+					col--;
+					corner_col--;
 					move(y, x);
 				}
 			}
