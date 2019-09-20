@@ -47,6 +47,20 @@ void start() {
 	endwin();
 }
 
+
+void set_icon(int row, int col) {
+	char *letters = to_char(col - 1);
+	//printw("%u", strlen(letters));
+	move(0, 1);
+	if (col < 27) {
+		printw(" ");
+	}
+	printw("%s", letters);
+	free(letters);
+	printw("%d  ", row); //padding to make sure any other numbers are overwritten
+}
+
+
 //This is just going to print a blank cursor for now
 void refill(int y, int x) {
 	color_off();
@@ -68,12 +82,14 @@ void input() {
 					row--;
 					y--;
 					printw("        ");
+					set_icon(row, col); //This should have been a one time thing
+					move(y, x);         //But it broke everything when I tried it
+				} else if(corner_row > 1) {                             //oh well
+					draw_axes(corner_row-1, corner_col);
+					row--;
+					corner_row--;
+					set_icon(row, col);
 					move(y, x);
-				} else if(corner_row > 1) {
-						draw_axes(corner_row-1, corner_col);
-						row--;
-						corner_row--;
-						move(y, x);
 				}
 			} else if(real == 'B') { //down
 				if (y < max_y - 1) {
@@ -82,14 +98,15 @@ void input() {
 					row++;
 					y++;
 					printw("        ");
+					set_icon(row, col);
 					move(y, x);
 				} else if (row < 255) {
 					draw_axes(corner_row + 1, corner_col);
 					row++;
 					corner_row++;
-					move(y, x);
-					//this will be replaced later
-					printw("        ");
+					//this will be replaced later (also add in all the other directions)
+					//printw("        ");
+					set_icon(row, col);
 					move(y, x);
 				}
 			} else if (real == 'C') { //right
@@ -99,11 +116,13 @@ void input() {
 					printw("        ");
 					col++;
 					x+=draw_size;
+					set_icon(row, col);
 					move(y, x);
 				} else if(col < 255) {
 					draw_axes(corner_row, corner_col + 1);
 					col++;
 					corner_col++;
+					set_icon(row, col);
 					move(y, x);
 				}
 			} else if (real == 'D') { //left
@@ -113,11 +132,13 @@ void input() {
 					printw("        ");
 					col--;
 					x-=draw_size;
+					set_icon(row, col);
 					move(y, x);
 				} else if(col > 1) {
 					draw_axes(corner_row, corner_col - 1);
 					col--;
 					corner_col--;
+					set_icon(row, col);
 					move(y, x);
 				}
 			}

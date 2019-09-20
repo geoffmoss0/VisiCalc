@@ -60,7 +60,7 @@ void draw_axes(int yn, int xn) {
 					free(letters);
 				}			
 			} else {
-				if (j != (int) ((draw_size - 0.5) / 2) ) {
+				if (j != (int) ((draw_size - 0.5) / 2)) {
 					printw(" ");
 				} else {
 					char *letters = to_char(k + xn);
@@ -102,11 +102,11 @@ int draw_screenyx() {
 	init_pair(1, COLOR_BLUE, COLOR_BLACK); //Dark background
 	attron(COLOR_PAIR(2));
 
-	printw("   A1  ");
+	printw("  A1  ");
 
 	int max_x, max_y;
 	getmaxyx(curscr, max_y, max_x);
-	for (int x = 7; x < max_x; x++) {
+	for (int x = 6; x < max_x; x++) {
 		printw(" ");
 	}
 	move(1, 0);
