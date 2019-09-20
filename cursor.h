@@ -3,4 +3,6 @@
 
 void start();
 
+void input();
+
 #endif

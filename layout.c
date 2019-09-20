@@ -11,6 +11,16 @@ static int draw_size;
 static int x_start;
 static int y_start;
 
+
+void color_on() {
+	attroff(COLOR_PAIR(1));
+	attron(COLOR_PAIR(2));
+}
+
+void color_off() {
+	attroff(COLOR_PAIR(2));
+	attron(COLOR_PAIR(1));
+}
 ///Draw the axes, with y as the starting row and x as the starting column (converted to letters)
 void draw_axes(int y, int x) {
 	x_start = x;
@@ -20,7 +30,7 @@ void draw_axes(int y, int x) {
 	move(4, 0);
 	int b = 4;
 	attron(COLOR_PAIR(2));
-	for (int a = y+1; a < max_y - 4; a++) {
+	for (int a = y+1; a < max_y - 3; a++) {
 		if (a >= 100) {
 			printw("%d", a);
 		} else if (a >= 10) {
@@ -78,6 +88,7 @@ int draw_screenyx() {
 		fprintf(stderr, "Window has not yet been initialized\n");
 		return 0;
 	}
+	move(0, 0);
 	start_color();
 	//Background: 36, 76, 122
 	//Foreground: 143, 199, 240 
