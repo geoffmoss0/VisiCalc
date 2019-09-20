@@ -22,15 +22,18 @@ void color_off() {
 	attron(COLOR_PAIR(1));
 }
 ///Draw the axes, with y as the starting row and x as the starting column (converted to letters)
-void draw_axes(int y, int x) {
-	x_start = x;
-	y_start = y;
+///This function is a goddamn mess and I should never touch it once it works
+void draw_axes(int yn, int xn) {
+	xn--; //don't
+	yn--; //ask
+	x_start = xn;
+	y_start = yn;
 	int max_x, max_y;
 	getmaxyx(curscr, max_y, max_x);
 	move(4, 0);
 	int b = 4;
 	attron(COLOR_PAIR(2));
-	for (int a = y+1; a < max_y - 3; a++) {
+	for (int a = yn+1; a < max_y - 3 + yn; a++) {
 		if (a >= 100) {
 			printw("%d", a);
 		} else if (a >= 10) {
@@ -48,11 +51,11 @@ void draw_axes(int y, int x) {
 	int k = 0;
 	while ( ((k+1) * draw_size) + 3 < max_x) {
 		for (int j = 0; j < draw_size; j++) {
-			if (k + x < 26) {
+			if (k + xn < 26) {
 				if (j != ((draw_size / 2)) )
 					printw(" ");
 				else {
-					char *letters = to_char(k + x);
+					char *letters = to_char(k + xn);
 					printw("%s", letters);
 					free(letters);
 				}			
@@ -60,7 +63,7 @@ void draw_axes(int y, int x) {
 				if (j != (int) ((draw_size - 0.5) / 2) ) {
 					printw(" ");
 				} else {
-					char *letters = to_char(k + x);
+					char *letters = to_char(k + xn);
 					printw("%s", letters);
 					j++;
 					free(letters);
@@ -70,7 +73,7 @@ void draw_axes(int y, int x) {
 		}
 		k++;
 	}
-	move(4, 4);
+	//move(4, 4);
 	//draw_cells(start_y, start_x);
 }
 
@@ -119,7 +122,7 @@ int draw_screenyx() {
 	attron(COLOR_PAIR(2));
 	
 	printw("   ");
-	draw_axes(0, 0);
+	draw_axes(1, 1);
 	refresh();
 	return 0;
 }

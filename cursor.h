@@ -3,6 +3,8 @@
 
 void start();
 
+void refill();
+
 void input();
 
 #endif
