@@ -4,7 +4,7 @@
 struct table_s {
 	int rows;
 	int cols;
-	struct cell_s **cells[255][255];
+	struct cell_s **cells; //FIX THIS, NEEDS 63 ROWS
 };
 
 struct cell_s {
@@ -20,5 +20,8 @@ union data_s {
 	char *label;
 	void (*func)(struct cell_s, struct cell_s, struct table_s);
 };
+
+
+struct table_s *init_table();
 
 #endif

@@ -7,4 +7,6 @@ void refill();
 
 void input();
 
+void entry();
+
 #endif
