@@ -93,9 +93,12 @@ void entry(int ch) {
 				typed--;
 			}
 		} else {
-			if (typed < entry_size) {
+			if (typed < entry_size && ch <= 122 && ch >= 43) {
 				printw("%c", ch);
 				typed++;
+			} else if (ch == '\033') {
+				getch(); //clearing out arrow key notation
+				getch();
 			}
 		}
 
