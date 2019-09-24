@@ -113,7 +113,6 @@ void entry(int ch) {
 			} else if (ch == '\033') {
 				//flushinp();
 				getch(); //clearing out arrow key notation
-				
 				getch();
 			}
 		}
