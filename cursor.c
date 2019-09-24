@@ -72,15 +72,21 @@ void set_icon(int row, int col) {
 }
 
 
+///Gets entry when anything besides the arrow keys are typed
+///Handles screen sizing automatically, will not scroll past size of screen
 void entry(int ch) {
+	
+	char *entry_line = calloc(entry_size, sizeof(char));
+
 	int typed = 0;
 	move(0, 10);
-	if (ch >= 43 && ch <= 122) {
+	if (ch >= 32 && ch <= 122) {
 		for (int i = 11; i < max_x; i++) {
 			printw(" ");
 		}
 		move(0, 11);
 		printw("%c", ch);
+		entry_line[typed] = ch;
 		typed++;
 	}
 
@@ -90,33 +96,19 @@ void entry(int ch) {
 				move(0, 10 + typed);
 				printw(" ");
 				move(0, 10 + typed);
+				entry_line[typed] = 0;
 				typed--;
 			}
 		} else {
-			if (typed < entry_size && ch <= 122 && ch >= 43) {
+			if (typed < entry_size && ch <= 122 && ch >= 32) {
 				printw("%c", ch);
+				entry_line[typed] = ch;
 				typed++;
 			} else if (ch == '\033') {
 				getch(); //clearing out arrow key notation
 				getch();
 			}
 		}
-
-		/*
-		if (typed < entry_size) {
-			if (ch == 127 && typed > 0) {
-				color_off();
-				move(0, 10 + typed);
-				printw(" ");
-				move(0, 10 + typed);
-				typed--;
-				color_on();
-			} else {
-				printw("%c", ch);
-				typed++;
-			}
-		}
-		*/
 	}
 	
 	//TODO figure out how to display the data I just entered
@@ -124,6 +116,13 @@ void entry(int ch) {
 	for (int i = 10; i < max_x; i++) {
 		printw(" ");
 	}
+	
+	//remove
+	//move(y, x);
+	//printw("%s", entry_line);
+	set_data(entry_line, row, col);
+	free(entry_line);
+	//TODO Free entry_line
 }
 
 
@@ -139,7 +138,6 @@ void refill(int y, int x) {
 void input() {
 	int ch;
 	while((ch = getch()) != '\0') {
-		char entry_line[entry_size]; 
 		if (ch == '\033') {
 			getch(); //Arrow keys are in the form of [[A, this clears out the second bracket
 			int real = getch();

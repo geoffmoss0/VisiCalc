@@ -1,27 +1,26 @@
 #ifndef DATA
 #define DATA
 
-struct table_s {
-	int rows;
-	int cols;
-	struct cell_s **cells; //FIX THIS, NEEDS 63 ROWS
-};
-
 struct cell_s {
 	int row;
 	int col;
 	//do I really need this for the simplest version?
-	int contents; //based on the number, contains a number, string, or function
+	int contents; //based on the number, contains an int, double, or string (label)
 	union data_s *data;
 };
 
 union data_s {
+	long int num;
 	double value;
 	char *label;
-	void (*func)(struct cell_s, struct cell_s, struct table_s);
+	//maybe function pointer later?
 };
 
 
-struct table_s *init_table();
+struct cell_s ***init_table();
+
+void set_data(char *input, int row, int col);
+
+char *print_data(int row, int col, int draw_size);
 
 #endif
