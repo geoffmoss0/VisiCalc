@@ -16,11 +16,15 @@ union data_s {
 	//maybe function pointer later?
 };
 
+typedef struct cell_s *cell;
 
-struct cell_s ***init_table();
+typedef union data_s *data;
 
-void set_data(char *input, int row, int col);
 
-char *print_data(int row, int col, int draw_size);
+cell *init_table();
+
+void set_data(char *input, int row, int col, cell table[256][64]);
+
+char *print_data(int row, int col, int draw_size, cell table[256][64]);
 
 #endif

@@ -3,7 +3,7 @@
 
 void start();
 
-void refill();
+void refill(int y, int x, int row, int col);
 
 void input();
 

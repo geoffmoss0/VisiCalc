@@ -5,9 +5,10 @@
 #include "cursor.h"
 #include "layout.h"
 #include "functions.h"
-#include "data.h" 
+#include "data.h"
 
 //These don't really need to be static, I'm just a slave to my java habits
+//Ok don't yell at me I just didn't feel like throwing all these values around
 static int col; //The column of the cursor
 static int row; //The row of the cursor
 static int x; //The on-screen position of the actual cursor
@@ -17,7 +18,7 @@ static int max_y; //(how big it is)
 static int corner_row; //the row and column in the upper left corner
 static int corner_col; //---------------------------------------
 static int entry_size;
-
+static cell (*table)[64];
 
 ///Called by the driver file, sets up the layout and sets all various x and y values
 ///Calls input(), which handles all user input
@@ -43,6 +44,9 @@ void start() {
 	getmaxyx(curscr, max_y, max_x);
 	entry_size = max_x - 12;
 	refresh();
+	cell *tab = init_table();
+	table = (cell (*)[64])tab;
+	printw("%p", table);
 	input();
 	
 	char ch = getch();
@@ -120,17 +124,23 @@ void entry(int ch) {
 	//remove
 	//move(y, x);
 	//printw("%s", entry_line);
-	set_data(entry_line, row, col);
+	set_data(entry_line, row, col, table);
 	free(entry_line);
+
 	//TODO Free entry_line
 }
 
 
 //This is just going to print a blank cursor for now
-void refill(int y, int x) {
+void refill(int y, int x, int row, int col) {
 	move(y, x);
 	color_off();
-	printw("        ");
+	char *cursor = calloc(draw_size + 1, sizeof(char));
+	for (int i = 0; i < draw_size; i++) {
+		strcat(cursor, " ");
+	}
+	//printw("%s", cursor);
+	printw("%s", print_data(row, col, draw_size, table));
 	move(y, x);
 	color_on();
 }
@@ -143,7 +153,7 @@ void input() {
 			int real = getch();
 			if (real == 'A') { //up
 				if (row > 1 && row > corner_row) {
-					refill(y, x);
+					refill(y, x, row, col);
 					move(y-1, x);
 					row--;
 					y--;
@@ -161,7 +171,7 @@ void input() {
 				}
 			} else if(real == 'B') { //down
 				if (y < max_y - 1) {
-					refill(y, x);
+					refill(y, x, row, col);
 					move(y+1, x);
 					row++;
 					y++;
@@ -181,7 +191,7 @@ void input() {
 				}
 			} else if (real == 'C') { //right
 				if (x <= max_x - (2 * draw_size)) {
-					refill(y, x);
+					refill(y, x, row, col);
 					move(y, x+draw_size);
 					printw("        ");
 					col++;
@@ -197,7 +207,7 @@ void input() {
 				}
 			} else if (real == 'D') { //left
 				if (x >= draw_size) {
-					refill(y, x);
+					refill(y, x, row, col);
 					move(y, x-draw_size);
 					printw("        ");
 					col--;
