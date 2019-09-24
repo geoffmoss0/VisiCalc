@@ -3,6 +3,8 @@
 
 void start();
 
+void fill_in(int y, int x, int row, int col);
+
 void refill(int y, int x, int row, int col);
 
 void input();

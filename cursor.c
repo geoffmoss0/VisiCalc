@@ -46,7 +46,6 @@ void start() {
 	refresh();
 	cell *tab = init_table();
 	table = (cell (*)[64])tab;
-	printw("%p", table);
 	input();
 	
 	char ch = getch();
@@ -103,43 +102,46 @@ void entry(int ch) {
 				entry_line[typed] = 0;
 				typed--;
 			}
+		} else if (ch == 27){
+			free(entry_line);
+			return;
 		} else {
 			if (typed < entry_size && ch <= 122 && ch >= 32) {
 				printw("%c", ch);
 				entry_line[typed] = ch;
 				typed++;
 			} else if (ch == '\033') {
+				//flushinp();
 				getch(); //clearing out arrow key notation
+				
 				getch();
 			}
 		}
 	}
 	
-	//TODO figure out how to display the data I just entered
 	move(0, 10);
 	for (int i = 10; i < max_x; i++) {
 		printw(" ");
 	}
 	
-	//remove
-	//move(y, x);
-	//printw("%s", entry_line);
+	move(y, x);
 	set_data(entry_line, row, col, table);
+	fill_in(y, x, row, col);
 	free(entry_line);
+}
 
-	//TODO Free entry_line
+///Draw the cursor at the new location with the data inside
+void fill_in(int y, int x, int row, int col) {
+	move(y, x);
+	printw("%s", print_data(row, col, draw_size, table));
+	move(y, x);
 }
 
 
-//This is just going to print a blank cursor for now
+//Rewrite the cell that just had the cursor whlie keeping the data
 void refill(int y, int x, int row, int col) {
-	move(y, x);
 	color_off();
-	char *cursor = calloc(draw_size + 1, sizeof(char));
-	for (int i = 0; i < draw_size; i++) {
-		strcat(cursor, " ");
-	}
-	//printw("%s", cursor);
+	move(y, x);
 	printw("%s", print_data(row, col, draw_size, table));
 	move(y, x);
 	color_on();
@@ -157,17 +159,17 @@ void input() {
 					move(y-1, x);
 					row--;
 					y--;
-					printw("        ");
+					//printw("        ");
+					fill_in(y, x, row, col);
 					set_icon(row, col); //This should have been a one time thing
 					move(y, x);         //But it broke everything when I tried it
-					//TODO add contents of new cell to entry line
 				} else if(corner_row > 1) {                             
 					draw_axes(corner_row-1, corner_col);
 					row--;
 					corner_row--;
 					set_icon(row, col);
 					move(y, x);
-					//TODO see above
+					fill_in(y, x, row, col);
 				}
 			} else if(real == 'B') { //down
 				if (y < max_y - 1) {
@@ -175,16 +177,14 @@ void input() {
 					move(y+1, x);
 					row++;
 					y++;
-					printw("        ");
+					fill_in(y, x, row, col);
 					set_icon(row, col);
 					move(y, x);
-					//TODO
 				} else if (row < 254) {
 					draw_axes(corner_row + 1, corner_col);
 					row++;
 					corner_row++;
-					//this will be replaced later (also add in all the other directions)
-					//printw("        ");
+					fill_in(y, x, row, col);
 					set_icon(row, col);
 					move(y, x);
 					//TODO
@@ -193,9 +193,9 @@ void input() {
 				if (x <= max_x - (2 * draw_size)) {
 					refill(y, x, row, col);
 					move(y, x+draw_size);
-					printw("        ");
 					col++;
 					x+=draw_size;
+					fill_in(y, x, row, col);
 					set_icon(row, col);
 					move(y, x);
 				} else if(col < 63) {
@@ -203,22 +203,25 @@ void input() {
 					col++;
 					corner_col++;
 					set_icon(row, col);
+					fill_in(y, x, row, col);
 					move(y, x);
 				}
 			} else if (real == 'D') { //left
 				if (x >= draw_size) {
 					refill(y, x, row, col);
 					move(y, x-draw_size);
-					printw("        ");
+					//printw("        ");
 					col--;
 					x-=draw_size;
 					set_icon(row, col);
+					fill_in(y, x, row, col);
 					move(y, x);
 				} else if(col > 1) {
 					draw_axes(corner_row, corner_col - 1);
 					col--;
 					corner_col--;
 					set_icon(row, col);
+					fill_in(y, x, row, col);
 					move(y, x);
 				}
 			}

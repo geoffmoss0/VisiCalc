@@ -7,57 +7,79 @@
 #include "data.h"
 
 //static cell **table;
+static int count = 0;
 
 struct cell_s **init_table() {
-	struct cell_s **tab = calloc(256 * 64, sizeof(struct cell_s *));
-	printw("%p", tab);
+	struct cell_s **tab = (struct cell_s **)calloc(256 * 64, sizeof(struct cell_s *));
 	//table = tab;
 	return tab;
 }
 
 //should this be void? idk
 void set_data(char *input, int row, int col, cell table[256][64]) {
-	if (input[0] == 58) {
+	if (input[0] == 34) {
 		//Label
 		//TODO make sure quotes are consistent
-		//TODO sanitize quotes from input
-		if (table[row-1][col-1]->data == NULL) {
-			cell new = table[row-1][col-1];
+		if (table[row-1][col-1] == NULL) {
+			cell new = (cell)malloc(sizeof(struct cell_s));
 			new->row = row;
 			new->col = col;
 			new->contents = 2;
 			new->data = (data)malloc(sizeof(union data_s));
-			strcpy(new->data->label, input);
+			new->data->label = (char *)malloc(strlen(input));
+			strcpy(new->data->label, input+1);
+			if(new->data->label[strlen(input)-2] == '"')
+				new->data->label[strlen(input)-2] = '\0';
 			table[row-1][col-1] = new;
-		} else if (strchr(input, '.')) {
-			//double
-			char **trash;
-			double num = strtod(input, trash);
-			if (table[row-1][col-1]->data == NULL) {
-				//TODO fix this
-				cell new = (cell)malloc(sizeof(struct cell_s));
-				new->row = row;
-				new->col = col;
-				new->contents = 1;
-				new->data = (data)malloc(sizeof(union data_s));
-				new->data->value = num;
-			}
 		} else {
-			//long int (must be all numbers, no other symbols)
-			char **trash;
-			long int num = strtol(input, trash, 10);
-			if (table[row-1][col-1]->data == NULL) {
-				//TODO fix this
-				cell new = (cell)malloc(sizeof(struct cell_s));
-				new->row = row;
-				new->col = col;
-				new->contents = 0;
-				new->data = (data)malloc(sizeof(union data_s));
-				new->data->num = num;
+			table[row-1][col-1] = realloc(table[row-1][col-1]->data->label, strlen(input));
+			strcpy(table[row-1][col-1]->data->label, input+1);
+			if(table[row-1][col-1]->data->label[strlen(input)-2] == '"') {
+				table[row-1][col-1]->data->label[strlen(input)-2] = '\0';
 			}
 		}
-		//Functions to come later, I have no idea how that will work
+	} else if (strchr(input, '.')) {
+
+	//double
+	char **trash;
+		double num = strtod(input, trash);
+		if (table[row-1][col-1]== NULL) {
+			//TODO fix this
+			cell new = (cell)malloc(sizeof(struct cell_s));
+			new->row = row;
+			new->col = col;
+			new->contents = 1;
+			new->data = (data)malloc(sizeof(union data_s));
+			new->data->value = num;
+			table[row-1][col-1] = new;
+		}
+	} else {
+		/*
+		move(21, 20);
+		printw("parsing an int: %s", input);
+		refresh();
+		*/
+		//long int (must be all numbers, no other symbols)
+		long int num;
+		if (input[0] >= 48 && input[0] <= 57) {
+			num = strtol(input, NULL, 10);
+		} else {
+			return;
+		}
+		if (table[row-1][col-1] == NULL) {
+			//TODO fix this
+			cell new = (cell)malloc(sizeof(struct cell_s));
+			new->row = row;
+			new->col = col;
+			new->contents = 0;
+			new->data = (data)malloc(sizeof(union data_s));
+			new->data->num = num;
+			table[row-1][col-1] = new;
+		} else {
+			table[row-1][col-1]->data->num = num;
+		}
 	}
+	//Functions to come later, I have no idea how that will work
 }
 
 
@@ -65,7 +87,7 @@ void set_data(char *input, int row, int col, cell table[256][64]) {
 char *print_data(int row, int col, int draw_size, cell table[256][64]) {
 	char *out = (char *)calloc(draw_size + 1, sizeof(char));
 
-	cell print = table[1][1];
+	cell print = table[row-1][col-1];
 
 	if (print == NULL) {
 		//Cell does not have any data
@@ -76,7 +98,10 @@ char *print_data(int row, int col, int draw_size, cell table[256][64]) {
 	} else if (print->contents == 2) {
 		//string guaranteed to be in correct form with quotes on either side
 		strncat(out, print->data->label, draw_size);
-		//for (int i = 
+		for (int i = strlen(out); i < draw_size; i++) {
+			strcat(out, " ");
+		}
+		return out;
 	} else if(print->contents == 1) {
 		//gotta display ">>>" if the number is too large, cut off decimal places
 		//TODO
@@ -90,8 +115,13 @@ char *print_data(int row, int col, int draw_size, cell table[256][64]) {
 			}
 			return out;
 		} else {
-			snprintf(out, draw_size, "%ld", print->data->num);
-			//strcat(
+			char create[draw_size+1];
+			snprintf(create, draw_size, "%ld", print->data->num);
+			for (int i = strlen(create); i < draw_size; i++) {
+				strcat(out, " ");
+			}
+			strcat(out, create);
+			return out;
 		}
 	}
 	return NULL;
