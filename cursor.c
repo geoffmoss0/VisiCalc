@@ -84,7 +84,10 @@ void set_icon(int row, int col) {
 			printw(" ");
 		}
 	} else {
-		printw(" %s", inside);
+		printw("  %s", inside);
+		for (int i = 11; i < max_x; i++) {
+			printw(" ");
+		}
 	}
 	
 	color_off();
