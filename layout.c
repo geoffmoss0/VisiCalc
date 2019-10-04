@@ -77,10 +77,19 @@ void draw_axes(int yn, int xn) {
 	//draw_cells(start_y, start_x);
 }
 
-///Draws the data inside the cells. Definitely not working on this now
-//void draw_cells(int y, int x) {
+///Draws the data inside the cells  
+void draw_cells(int row, int col, int max_y, int max_x, int draw_size, cell (**table)[64]) {
 	//make sure to keep track of cursor position locally
-//}
+	int draw = (max_x - 3) / draw_size;
+	color_off();
+	for (int i = 0; i < (max_y - 4); i++) {
+		move(4 + i, 3);
+		for (int j = 0; j < draw; j++) {
+			printw("%s", print_data(row+i, col+j, draw_size, *table));
+			//printw("AAAAAAAA");
+		}
+	}
+}
 
 
 ///Initial setup for the screen, at some point I might make this work with

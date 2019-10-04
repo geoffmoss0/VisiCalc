@@ -2,10 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "data.h"
 #include "cursor.h"
 #include "layout.h"
 #include "functions.h"
-#include "data.h"
 
 //These don't really need to be static, I'm just a slave to my java habits
 //Ok don't yell at me I just didn't feel like throwing all these values around
@@ -54,6 +54,7 @@ void start() {
 
 
 void set_icon(int row, int col) {
+	color_on();
 	char *letters = to_char(col - 1);
 	//printw("%u", strlen(letters));
 	move(0, 1);
@@ -72,6 +73,7 @@ void set_icon(int row, int col) {
 	for (int i = 9; i < max_x; i++) {
 		printw(" ");
 	}
+	color_off();
 }
 
 
@@ -81,6 +83,7 @@ void entry(int ch) {
 	
 	char *entry_line = calloc(entry_size, sizeof(char));
 
+	color_on();
 	int typed = 0;
 	move(0, 10);
 	if (ch >= 32 && ch <= 122) {
@@ -131,6 +134,7 @@ void entry(int ch) {
 
 ///Draw the cursor at the new location with the data inside
 void fill_in(int y, int x, int row, int col) {
+	color_on();
 	move(y, x);
 	printw("%s", print_data(row, col, draw_size, table));
 	move(y, x);
@@ -164,6 +168,7 @@ void input() {
 					move(y, x);         //But it broke everything when I tried it
 				} else if(corner_row > 1) {                             
 					draw_axes(corner_row-1, corner_col);
+					draw_cells(corner_row-1, corner_col, max_y, max_x, draw_size, &table);
 					row--;
 					corner_row--;
 					set_icon(row, col);
@@ -181,6 +186,7 @@ void input() {
 					move(y, x);
 				} else if (row < 254) {
 					draw_axes(corner_row + 1, corner_col);
+					draw_cells(corner_row + 1, corner_col, max_y, max_x, draw_size, &table);
 					row++;
 					corner_row++;
 					fill_in(y, x, row, col);
@@ -199,6 +205,7 @@ void input() {
 					move(y, x);
 				} else if(col < 63) {
 					draw_axes(corner_row, corner_col + 1);
+					draw_cells(corner_row, corner_col + 1, max_y, max_x, draw_size, &table);
 					col++;
 					corner_col++;
 					set_icon(row, col);
@@ -217,6 +224,7 @@ void input() {
 					move(y, x);
 				} else if(col > 1) {
 					draw_axes(corner_row, corner_col - 1);
+					draw_cells(corner_row, corner_col - 1, max_y, max_x, draw_size, &table);
 					col--;
 					corner_col--;
 					set_icon(row, col);
