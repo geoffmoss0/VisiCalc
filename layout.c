@@ -111,7 +111,7 @@ int draw_screenyx() {
 	init_pair(1, COLOR_BLUE, COLOR_BLACK); //Dark background
 	attron(COLOR_PAIR(2));
 
-	printw("  A1  <X> ");
+	printw("  A1      ");
 
 	int max_x, max_y;
 	getmaxyx(curscr, max_y, max_x);

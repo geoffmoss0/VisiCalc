@@ -67,8 +67,16 @@ void set_icon(int row, int col) {
 	
 	//TODO add the indicator for <L> (label), <V> (value), etc
 	move(0, 6);
-	printw("<X>");
-
+	if (table[row-1][col-1] != NULL) {
+		printw("<");
+		if (table[row-1][col-1]->contents < 2)
+			printw("V");
+		else
+			printw("L");
+		printw(">");
+	} else {
+		printw("   ");
+	}
 	//TODO replace this with the data entry for the next thing, clear the rest
 	for (int i = 9; i < max_x; i++) {
 		printw(" ");
@@ -129,6 +137,7 @@ void entry(int ch) {
 	move(y, x);
 	set_data(entry_line, row, col, table);
 	fill_in(y, x, row, col);
+	set_icon(row, col);
 	free(entry_line);
 }
 
