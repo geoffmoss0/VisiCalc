@@ -150,7 +150,7 @@ char *print_data(int row, int col, int draw_size, cell table[256][64]) {
 			return out;
 		} else {
 			char create[draw_size+1];
-			snprintf(create, draw_size, "%ld", print->data->num);
+			snprintf(create, draw_size + 1, "%ld", print->data->num);
 			for (int i = strlen(create); i < draw_size; i++) {
 				strcat(out, " ");
 			}
@@ -162,9 +162,29 @@ char *print_data(int row, int col, int draw_size, cell table[256][64]) {
 }
 
 
-///returns if the given cell is a value or label
-char get_type(int row, int col) {
-	(void) row;
-	(void) col;
-	return 0;
+char *get_raw(int row, int col, int entry_size, cell (**table)[64]) {
+	char *out = (char *)calloc(entry_size + 1, sizeof(char));
+	cell from = (*table)[row-1][col-1];
+	if (from == NULL) {
+		return NULL;
+	}
+
+	if (from->contents == 2) {
+		//label
+		strncat(out, from->data->label, entry_size);
+		return out;
+	} else if (from->contents == 1) {
+
+		snprintf(out, entry_size, "%'.15f", from->data->value);
+		//get rid of trailing zeros
+		int i = strlen(out) - 1;
+		while(i >= 0 && out[i] == '0') {
+			out[i] = '\0';
+		}
+		return out;
+	} else {
+		//int
+		snprintf(out, entry_size, "%ld", from->data->num);
+		return out;
+	}
 }

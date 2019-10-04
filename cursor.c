@@ -78,9 +78,15 @@ void set_icon(int row, int col) {
 		printw("   ");
 	}
 	//TODO replace this with the data entry for the next thing, clear the rest
-	for (int i = 9; i < max_x; i++) {
-		printw(" ");
+	char *inside = get_raw(row, col, entry_size, &table);
+	if (inside == NULL) {
+		for (int i = 9; i < max_x; i++) {
+			printw(" ");
+		}
+	} else {
+		printw(" %s", inside);
 	}
+	
 	color_off();
 }
 
@@ -145,7 +151,9 @@ void entry(int ch) {
 void fill_in(int y, int x, int row, int col) {
 	color_on();
 	move(y, x);
-	printw("%s", print_data(row, col, draw_size, table));
+	char *print = print_data(row, col, draw_size, table);
+	printw("%s", print);
+	free(print);
 	move(y, x);
 }
 
@@ -154,7 +162,9 @@ void fill_in(int y, int x, int row, int col) {
 void refill(int y, int x, int row, int col) {
 	color_off();
 	move(y, x);
-	printw("%s", print_data(row, col, draw_size, table));
+	char *print = print_data(row, col, draw_size, table);
+	printw("%s", print);
+	free(print);
 	move(y, x);
 	color_on();
 }

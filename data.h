@@ -27,4 +27,6 @@ void set_data(char *input, int row, int col, cell table[256][64]);
 
 char *print_data(int row, int col, int draw_size, cell table[256][64]);
 
+char *get_raw(int row, int col, int entry_size, cell (**table)[64]);
+
 #endif
