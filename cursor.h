@@ -11,4 +11,6 @@ void input();
 
 void entry(int ch);
 
+void set_icon(int row, int col);
+
 #endif
