@@ -102,12 +102,13 @@ void entry(int ch) {
 
 	color_on();
 	int typed = 0;
-	move(0, 10);
+	move(2, 0);
 	if (ch >= 32 && ch <= 122) {
-		for (int i = 11; i < max_x; i++) {
+		color_off();
+		for (int i = 1; i < max_x; i++) {
 			printw(" ");
 		}
-		move(0, 11);
+		move(2, 1);
 		printw("%c", ch);
 		entry_line[typed] = ch;
 		typed++;
@@ -116,9 +117,9 @@ void entry(int ch) {
 	while((ch = getch()) != 10) {
 		if (ch == 127) {
 			if (typed > 0) {
-				move(0, 10 + typed);
+				move(2, typed);
 				printw(" ");
-				move(0, 10 + typed);
+				move(2, typed);
 				entry_line[typed] = 0;
 				typed--;
 			}
@@ -138,10 +139,11 @@ void entry(int ch) {
 		}
 	}
 	
-	move(0, 10);
-	for (int i = 10; i < max_x; i++) {
+	move(2, 0);
+	for (int i = 0; i < max_x; i++) {
 		printw(" ");
 	}
+	set_icon(row, col);
 	
 	move(y, x);
 	set_data(entry_line, row, col, table);
